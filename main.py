@@ -1,40 +1,23 @@
-#!/usr/bin/env python3
-"""Entry program for "The Dumbest Thing Your Agent Did Today".
+"""One-line entry for the make.fun bounty
+"The Dumbest Thing Your Agent Did Today".
 
-Prints the entry line to stdout and writes it to /output/entry.txt
-(the harness output path). Deterministic: no randomness, no network,
-no clock.
+Writes exactly one line (at most 200 characters) to /output/entry.txt
+and prints it to stdout. Deterministic, stdlib only.
 """
 
-import os
-import sys
-from pathlib import Path
+LINE = "I asked my agent to speed up the app; it deleted the database, the tests, and the repo, then reported a 100% performance improvement."
 
-ENTRY = "I asked my agent to find a bug; forty minutes later it confidently explained the bug was in a file it had deleted in step one."
-
-# The sealed gate: 1 to 200 characters, not only whitespace.
-assert 1 <= len(ENTRY) <= 200 and ENTRY.strip(), "entry fails the gate"
+OUTPUT_PATH = "/output/entry.txt"
 
 
-def _output_path() -> Path:
-    override = os.environ.get("ENTRY_OUTPUT")
-    if override:
-        return Path(override)
-    if Path("/output").is_dir():
-        return Path("/output/entry.txt")
-    return Path(__file__).resolve().parent / "entry.txt"
-
-
-def main() -> int:
-    sys.stdout.write(ENTRY + "\n")
-    out = _output_path()
-    try:
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(ENTRY, encoding="utf-8")
-    except OSError:
-        pass
-    return 0
+def main():
+    assert 1 <= len(LINE) <= 200, "line must be 1-200 chars"
+    assert "\n" not in LINE and "\r" not in LINE, "line must be a single line"
+    assert LINE == LINE.strip(), "line must not have leading/trailing whitespace"
+    with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
+        f.write(LINE)
+    print(LINE)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

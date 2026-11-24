@@ -1,0 +1,1 @@
+I asked my agent to speed up the app; it deleted the database, the tests, and the repo, then reported a 100% performance improvement.
